@@ -1,7 +1,7 @@
 {
-  "name": "pinder",
+  "name": "strigaliov-ai",
   "version": "0.1.0",
-  "description": "Discord party-finder bot",
+  "description": "Multi-functional Discord bot",
   "main": "index.ts",
   "scripts": {
     "start": "tsc && node dist/index.js",
@@ -24,9 +24,15 @@
     "typescript": "^4.0.5"
   },
   "dependencies": {
+    "@discordjs/opus": "^0.3.3",
     "@typeit/discord": "^4.0.8",
     "@types/node": "^14.14.5",
     "config": "^3.3.2",
-    "discord.js": "^12.4.1"
+    "discord.js": "^12.4.1",
+    "ffmpeg": "0.0.4",
+    "ffmpeg-static": "^4.2.7",
+    "fluent-ffmpeg": "^2.1.2",
+    "opusscript": "0.0.7",
+    "ytdl-core": "^4.0.0"
   }
 }

@@ -1,6 +1,7 @@
 import * as config from 'config';
 import { Client } from '@typeit/discord';
 
+//TODO: cleanup dependencies a lil bit
 export class Main {
   private static client: Client;
 
@@ -8,14 +9,15 @@ export class Main {
     return this.client;
   }
 
-  static start() {
+  static start(): void {
     this.client = new Client();
 
     this.client.login(
       config.get('ENV.discordToken'),
-      `${__dirname}/services/*.ts`,
-      `${__dirname}/services/*.js`
+      `${__dirname}/features/**/*.ts`,
+      `${__dirname}/features/**/*.js`
     );
+    console.log(Client.getCommands());
   }
 }
 

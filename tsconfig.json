@@ -5,10 +5,10 @@
     "noImplicitAny": false,
     "sourceMap": true,
     "outDir": "build",
+    "allowSyntheticDefaultImports": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "importHelpers": true,
-    "forceConsistentCasingInFileNames": true,
     "lib": ["es2018", "esnext.asynciterable"],
     "moduleResolution": "node"
   },
