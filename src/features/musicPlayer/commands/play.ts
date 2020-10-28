@@ -7,15 +7,22 @@ import SongQueueModel from '../models/songQueue.model';
 import SongModel from '../models/song.model';
 
 class Play extends BaseCommand {
-  queue: Map<string, SongQueueModel>;
   constructor() {
     super('play', 'Play a song in your channel!');
-    this.queue = new Map();
   }
 
-  async execute(message: CommandMessage): Promise<Message> {
-    const args = message.content.split(' ').slice(1);
-    const serverQueue = this.queue.get(message.guild.id);
+  async execute(
+    message: CommandMessage,
+    queue: Map<string, SongQueueModel>
+  ): Promise<Message> {
+    const arg = message.content.split(' ').slice(1, 2).join('').trim();
+    if (!arg.match(/(youtube.com|youtu.be)\/(watch)?(\?v=)?(\S+)?/)) {
+      return message.channel.send(
+        'Please provide a valid single Youtube link!'
+      );
+    }
+
+    const serverQueue = queue.get(message.guild.id);
 
     const voiceChannel = message.member.voice.channel;
     if (!voiceChannel)
@@ -29,7 +36,7 @@ class Play extends BaseCommand {
       );
     }
 
-    const songInfo = await ytdl.getInfo(args[0]);
+    const songInfo = await ytdl.getInfo(arg);
     const song: SongModel = {
       title: songInfo.videoDetails.title,
       url: songInfo.videoDetails.video_url,
@@ -45,7 +52,7 @@ class Play extends BaseCommand {
         playing: true,
       };
 
-      this.queue.set(message.guild.id, songQueue);
+      queue.set(message.guild.id, songQueue);
       songQueue.songs.push(song);
 
       try {
@@ -54,7 +61,7 @@ class Play extends BaseCommand {
         this.play(message, songQueue);
       } catch (err) {
         console.log(err);
-        this.queue.delete(message.guild.id);
+        queue.delete(message.guild.id);
         message.channel.send(err);
       }
     } else {
@@ -63,14 +70,17 @@ class Play extends BaseCommand {
     }
   }
 
-  private async play(message: CommandMessage, songQueue: SongQueueModel) {
+  private async play(
+    message: CommandMessage,
+    songQueue: SongQueueModel
+  ): Promise<Message> {
     if (songQueue.songs.length === 0) {
       songQueue.voiceChannel.leave();
       return;
     }
 
     try {
-      songQueue.connection
+      await songQueue.connection
         .play(ytdl(songQueue.songs[0].url))
         .on('finish', () => {
           songQueue.songs.shift();

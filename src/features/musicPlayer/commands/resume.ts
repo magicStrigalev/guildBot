@@ -4,9 +4,9 @@ import { Message } from 'discord.js';
 import BaseCommand from '../../../helpers/baseCommand';
 import SongQueueModel from '../models/songQueue.model';
 
-class Pause extends BaseCommand {
+class Resume extends BaseCommand {
   constructor() {
-    super('pause', 'Pause a song!');
+    super('resume', 'Resume a song!');
   }
 
   async execute(
@@ -16,19 +16,19 @@ class Pause extends BaseCommand {
     const serverQueue = queue.get(message.guild.id);
     if (!message.member.voice.channel) {
       return message.channel.send(
-        'You have to be in a voice channel to pause the music!'
+        'You have to be in a voice channel to resume the music!'
       );
     }
     if (!serverQueue) {
       return message.channel.send('There is no song in queue!');
     }
     if (serverQueue.connection.dispatcher.paused) {
-      return message.channel.send('Song is already paused');
+      serverQueue.connection.dispatcher.resume();
+      return message.channel.send('Song is resumed');
     } else {
-      serverQueue.connection.dispatcher.pause();
-      return message.channel.send('Song is paused');
+      return message.channel.send('Song is already playing!');
     }
   }
 }
 
-export default Pause;
+export default Resume;

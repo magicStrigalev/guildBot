@@ -1,7 +1,6 @@
 import * as config from 'config';
 import { Client } from '@typeit/discord';
 
-//TODO: cleanup dependencies a lil bit
 export class Main {
   private static client: Client;
 
